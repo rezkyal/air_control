@@ -106,12 +106,16 @@ class Hand:
                 y2 = int(self._index_finger_tip_y[iteration + 1] * self._camera_height)
                 cv2.line(image, (x1, y1), (x2, y2), self._tip_color, 3)
 
+            cv2.circle(image, (x1, y1), 3, self._tip_color, 3)
+
             for iteration in range (0, len(self._thumb_finger_tip_x)-1):
                 x1 = int(self._thumb_finger_tip_x[iteration] * self._camera_width)
                 y1 = int(self._thumb_finger_tip_y[iteration] * self._camera_height)
                 x2 = int(self._thumb_finger_tip_x[iteration + 1] * self._camera_width)
                 y2 = int(self._thumb_finger_tip_y[iteration + 1] * self._camera_height)
                 cv2.line(image, (x1, y1), (x2, y2), self._tip_color, 3)
+
+            cv2.circle(image, (x1, y1), 3, self._tip_color, 3)
 
         while len(self._index_finger_tip_x) > self._max_tip_point:
             self._index_finger_tip_x.pop(0)

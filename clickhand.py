@@ -1,3 +1,4 @@
+from constant import PRESS_STATE, RELEASE_STATE
 from hand import Hand
 import math
 import mouse
@@ -5,7 +6,12 @@ import mouse
 class ClickHand(Hand):
 
     _max_click_distance = 0.2
-    _is_clicked = False
+    _is_pressed = False
+
+    _current_state_count = 0
+    _current_state = ''
+
+    MINIMUM_RELEASE_STATE_COUNT = 3
 
     def __init__(self, tip_color, box_color, camera_width, camera_height) -> None:
         super().__init__(tip_color, box_color, camera_width, camera_height, box_left_percentage = 0.15, box_bottom_percentage = 0.2, box_size_to_screen = 0.15)
@@ -24,15 +30,29 @@ class ClickHand(Hand):
             # print(distance)
             # print(self._max_click_distance)
             # print(distance < self._max_click_distance)
-            # print(self._is_clicked)
+            # print(self._is_pressed)
 
             if distance < self._max_click_distance:
-                if not self._is_clicked:
-                    self._is_clicked = True
+                if not self._is_pressed:
+                    if self._current_state == PRESS_STATE:
+                        self._current_state_count = 0
+
+                    self._current_state = PRESS_STATE
+                    self._current_state_count = self._current_state_count + 1
+
+                    self._is_pressed = True
                     print("clicked")
-                    # mouse.click()
+                    mouse.press()
                 else:
                     print("dragged")
             else:
-                self._is_clicked = False
+                if self._current_state != RELEASE_STATE:
+                    self._current_state_count = 0
+
+                self._current_state = RELEASE_STATE
+                self._current_state_count = self._current_state_count + 1
                 print("lose")
+                if self._current_state == RELEASE_STATE and self._current_state_count >= self.MINIMUM_RELEASE_STATE_COUNT and self._is_pressed:
+                    mouse.release()
+                    self._is_pressed = False
+                    print("released")
