@@ -1,0 +1,3 @@
+1. draw 2 rectangle, 1 for click hand, and 1 for pointer hand
+2. turn on camera, if tip of index and thumb finger inside the rectangle, designed the hands based on which rectangle they are on, change the state of the object as on and keep tracking
+3. let it behave
