@@ -4,7 +4,7 @@ SMOOTHENING_POINT = 30
 MINIMUM_POINT_TO_CALCULATE_ANGLE = 2
 MINIMUM_POINT_TO_CALCULATE_CENTROID = 5
 MINIMUM_ANGLE_DEGREE = 178
-MAXIMUM_CENTROID_DISTANCE = (1E-3)
+MAXIMUM_CENTROID_DISTANCE = (1E-2)
 
 def stabilize(x_point, y_point, index_finger_tip_x : list, index_finger_tip_y : list, is_calculate_centroid = True, is_smoothen = True):
     

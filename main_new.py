@@ -1,5 +1,5 @@
-from pointerhand import PointerHand
-from clickhand import ClickHand
+from hand.pointerhand import PointerHand
+from hand.clickhand import ClickHand
 import cv2
 import mediapipe as mp
 import time
