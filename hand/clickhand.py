@@ -1,26 +1,25 @@
+from constant.click_state import CLICK_STATE, DISPLAY_FORMAT, DRAG_STATE, POINTER_STATE
+from constant.release_state import RELEASE_STATE, PRESS_STATE
 from box import Box
-from constant import PRESS_STATE, RELEASE_STATE
 from .hand import Hand
 import math
 import mouse
 
 class ClickHand(Hand):
-
     _max_click_distance = 0.2
 
-    _is_left_pressed = False
-    _current_left_click_state_count = 0
-    _current_left_click_state = ''
+    _is_pressed = True
+    _current_release_state_count = 0
+    _current_release_state = RELEASE_STATE
 
-    _is_right_pressed = False
-    _current_right_click_state_count = 0
-    _current_right_click_state = ''
+    _current_click_state = ''
 
+    _selected_hand = None
 
     _left_click_box = None
     _right_click_box = None
 
-    MINIMUM_RELEASE_STATE_COUNT = 3
+    MINIMUM_POINTER_STATE_COUNT = 3
 
     _box_start_point = (0, 0)
     _box_end_point = (0, 0)
@@ -37,78 +36,54 @@ class ClickHand(Hand):
 
     def update_finger_tip(self, hand_landmarks, mp_hands, image):
         super().update_finger_tip(hand_landmarks, mp_hands, image, is_smoothen = False)
-        self.check_and_execute_left_click()
-        self.check_and_execute_right_click()
+        self.check_and_execute_click(mouse.LEFT)
+        self.check_and_execute_click(mouse.RIGHT)
 
-    def check_and_execute_left_click(self):
-        is_index_in_box, x_index_in_box, y_index_in_box = self._left_click_box.finger_in_box(self._index_finger_tip_x, self._index_finger_tip_y)
-        is_thumb_in_box, x_thumb_in_box, y_thumb_in_box = self._left_click_box.finger_in_box(self._thumb_finger_tip_x, self._thumb_finger_tip_y)
+    def check_and_execute_click(self, button = mouse.LEFT):
+        if button == mouse.LEFT:
+            click_box = self._left_click_box
+        elif button == mouse.RIGHT:
+            click_box = self._right_click_box
+
+        is_index_in_box, x_index_in_box, y_index_in_box = click_box.finger_in_box(self._index_finger_tip_x, self._index_finger_tip_y)
+        is_thumb_in_box, x_thumb_in_box, y_thumb_in_box = click_box.finger_in_box(self._thumb_finger_tip_x, self._thumb_finger_tip_y)
         
         if is_index_in_box and is_thumb_in_box:
+            self._selected_hand = button
+
             distance = math.sqrt( (x_index_in_box - x_thumb_in_box)**2 + (y_index_in_box - y_thumb_in_box)**2)
-
+            
             if distance < self._max_click_distance:
-                if not self._is_left_pressed:
-                    if self._current_left_click_state == PRESS_STATE:
-                        self._current_left_click_state_count = 0
+                if not self._is_pressed:
+                    if self._current_release_state == PRESS_STATE:
+                        self._current_release_state_count = 0
 
-                    self._current_left_click_state = PRESS_STATE
-                    self._current_left_click_state_count = self._current_left_click_state_count + 1
+                    self._current_release_state = PRESS_STATE
+                    self._current_release_state_count = self._current_release_state_count + 1
 
-                    self._is_left_pressed = True
-                    print("clicked - left")
-                    # mouse.press(button=mouse.LEFT)
+                    self._is_pressed = True
+                    self._current_click_state = DISPLAY_FORMAT.format(state = CLICK_STATE, button = button)
+                    mouse.press(button = button)
                 else:
-                    print("dragged - left")
+                    self._current_click_state = DISPLAY_FORMAT.format(state = DRAG_STATE, button = button)
             else:
-                if self._current_left_click_state != RELEASE_STATE:
-                    self._current_left_click_state_count = 0
+                if self._current_release_state != RELEASE_STATE:
+                    self._current_release_state_count = 0
 
-                self._current_left_click_state = RELEASE_STATE
-                self._current_left_click_state_count = self._current_left_click_state_count + 1
-                print("lose - left")
-                if self._current_left_click_state == RELEASE_STATE and self._current_left_click_state_count >= self.MINIMUM_RELEASE_STATE_COUNT and self._is_left_pressed:
-                    # mouse.release(button=mouse.LEFT)
-                    self._is_left_pressed = False
-                    print("released - left")
+                self._current_release_state = RELEASE_STATE
+                self._current_release_state_count = self._current_release_state_count + 1
+                if self._current_release_state == RELEASE_STATE and self._current_release_state_count >= self.MINIMUM_POINTER_STATE_COUNT and self._is_pressed:
+                    mouse.release(button = button)
+                    self._is_pressed = False
+                    self._current_click_state = POINTER_STATE
         else:
-            self._is_left_pressed = False
-            self._current_left_click_state_count = 0
-            self._current_left_click_state = ''
-        
+            if self._selected_hand == button:
+                self._selected_hand = None
+                self._is_pressed = False
+                self._current_release_state_count = 0
+                self._current_click_state = POINTER_STATE
+                self._current_release_state = RELEASE_STATE
 
-    def check_and_execute_right_click(self):
-        is_index_in_box, x_index_in_box, y_index_in_box = self._right_click_box.finger_in_box(self._index_finger_tip_x, self._index_finger_tip_y)
-        is_thumb_in_box, x_thumb_in_box, y_thumb_in_box = self._right_click_box.finger_in_box(self._thumb_finger_tip_x, self._thumb_finger_tip_y)
-        
-        if is_index_in_box and is_thumb_in_box:
-            distance = math.sqrt( (x_index_in_box - x_thumb_in_box)**2 + (y_index_in_box - y_thumb_in_box)**2)
-
-            if distance < self._max_click_distance:
-                if not self._is_right_pressed:
-                    if self._current_right_click_state == PRESS_STATE:
-                        self._current_right_click_state_count = 0
-
-                    self._current_right_click_state = PRESS_STATE
-                    self._current_right_click_state_count = self._current_right_click_state_count + 1
-
-                    self._is_right_pressed = True
-                    print("clicked - right")
-                    # mouse.press(button=mouse.RIGHT)
-                else:
-                    print("dragged - right")
-            else:
-                if self._current_right_click_state != RELEASE_STATE:
-                    self._current_right_click_state_count = 0
-
-                self._current_right_click_state = RELEASE_STATE
-                self._current_right_click_state_count = self._current_right_click_state_count + 1
-                print("lose - right")
-                if self._current_right_click_state == RELEASE_STATE and self._current_right_click_state_count >= self.MINIMUM_RELEASE_STATE_COUNT and self._is_right_pressed:
-                    # mouse.release(button=mouse.RIGHT)
-                    self._is_right_pressed = False
-                    print("released - right")
-        else:
-            self._is_right_pressed = False
-            self._current_right_click_state_count = 0
-            self._current_right_click_state = ''
+    def get_current_click_state(self):
+        print(self._current_click_state)
+        return self._current_click_state

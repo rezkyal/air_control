@@ -28,7 +28,7 @@ class PointerHand(Hand):
                 x_mouse_monitor = x_in_box_percentage * self._monitor_width
                 y_mouse_monitor = y_in_box_percentage * self._monitor_height
 
-                mouse.move(x_mouse_monitor, y_mouse_monitor)    
+                # mouse.move(x_mouse_monitor, y_mouse_monitor)    
 
     def update_monitor_size(self, monitor_width, monitor_height):
         self._monitor_width = monitor_width

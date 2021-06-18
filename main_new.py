@@ -44,7 +44,7 @@ with mp_hands.Hands(
 
         is_click_hand_tracking = click_hand.get_is_tracking()
         is_pointer_hand_tracking = pointer_hand.get_is_tracking()
-
+        
         click_hand.update_camera_size(width, height)
         pointer_hand.update_camera_size(width, height)
 
@@ -96,6 +96,10 @@ with mp_hands.Hands(
         fps = 1/(cTime - pTime)
         pTime = cTime
         cv2.putText(image, str(int(fps)), (20,50), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,0), 3)
+
+        click_state = click_hand.get_current_click_state()
+        org_x = monitor_width - 100
+        cv2.putText(image, click_state, (1000,50), cv2.FONT_HERSHEY_PLAIN, 2, (255,0,0), 3)
 
         cv2.imshow('MediaPipe Hands', image)
         if cv2.waitKey(5) & 0xFF == 27:
