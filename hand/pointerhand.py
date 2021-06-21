@@ -22,13 +22,13 @@ class PointerHand(Hand):
 
     def move_cursor(self):
         if len(self._index_finger_tip_x) > 1:
-            is_finger_in_box, x_in_box_percentage, y_in_box_percentage = self._pointer_box.finger_in_box(self._index_finger_tip_x, self._index_finger_tip_y)
+            is_finger_in_box, x_in_box_percentage, y_in_box_percentage = self._pointer_box.finger_in_box(self._index_finger_centroid[0], self._index_finger_centroid[1])
 
             if is_finger_in_box:
                 x_mouse_monitor = x_in_box_percentage * self._monitor_width
                 y_mouse_monitor = y_in_box_percentage * self._monitor_height
 
-                # mouse.move(x_mouse_monitor, y_mouse_monitor)    
+                mouse.move(x_mouse_monitor, y_mouse_monitor)    
 
     def update_monitor_size(self, monitor_width, monitor_height):
         self._monitor_width = monitor_width

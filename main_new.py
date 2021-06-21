@@ -4,8 +4,6 @@ import cv2
 import mediapipe as mp
 import time
 import screeninfo
-from mediapipe.framework.formats.classification_pb2 import ClassificationList
-
 
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
@@ -36,17 +34,14 @@ pointer_hand.update_monitor_size(monitor_width, monitor_height)
 
 pTime = 0
 with mp_hands.Hands(
-    min_detection_confidence=0.50,
-    min_tracking_confidence=0.50) as hands:
+    min_detection_confidence=0.70,
+    min_tracking_confidence=0.70) as hands:
     while cap.isOpened():
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
         is_click_hand_tracking = click_hand.get_is_tracking()
         is_pointer_hand_tracking = pointer_hand.get_is_tracking()
-        
-        click_hand.update_camera_size(width, height)
-        pointer_hand.update_camera_size(width, height)
 
         success, image = cap.read()
         if not success:

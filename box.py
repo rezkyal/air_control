@@ -27,16 +27,16 @@ class Box:
     def draw_box(self, image):
         cv2.rectangle(image, self._box_start_point, self._box_end_point, self._box_color, 3)
 
-    def finger_in_box(self, finger_tip_x, finger_tip_y):
-        x_last_in_camera = finger_tip_x[len(finger_tip_x) - 1] * self._camera_width
-        y_last_in_camera = finger_tip_y[len(finger_tip_y) - 1] * self._camera_height
+    def finger_in_box(self, centroid_x, centroid_y):
+        centroid_x_in_camera = centroid_x * self._camera_width
+        centroid_y_in_camera = centroid_y * self._camera_height
 
-        is_x_in_box = self._box_start_point[0] <= x_last_in_camera <= self._box_end_point[0]
-        is_y_in_box = self._box_start_point[1] <= y_last_in_camera <= self._box_end_point[1]
+        is_x_in_box = self._box_start_point[0] <= centroid_x_in_camera <= self._box_end_point[0]
+        is_y_in_box = self._box_start_point[1] <= centroid_y_in_camera <= self._box_end_point[1]
 
         if is_x_in_box and is_y_in_box:
-            x_in_box_percentage = (x_last_in_camera - self._box_start_point[0]) / (self._box_end_point[0] - self._box_start_point[0])
-            y_in_box_percentage = (y_last_in_camera - self._box_start_point[1]) / (self._box_end_point[1] - self._box_start_point[1])
+            x_in_box_percentage = (centroid_x_in_camera - self._box_start_point[0]) / (self._box_end_point[0] - self._box_start_point[0])
+            y_in_box_percentage = (centroid_y_in_camera - self._box_start_point[1]) / (self._box_end_point[1] - self._box_start_point[1])
 
             return True, x_in_box_percentage, y_in_box_percentage
         else:

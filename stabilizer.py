@@ -1,95 +1,120 @@
+from calculate_function import find_angle, find_centroid
+from constant.stabilize_type import CALCULATE_CENTROID_1, CALCULATE_CENTROID_2, NO_STABILIZER, SLOW_MOVE, SLOW_MOVE_WITH_MINIMUM_ANGLE
 import math
 
 SMOOTHENING_POINT = 30
 MINIMUM_POINT_TO_CALCULATE_ANGLE = 2
 MINIMUM_POINT_TO_CALCULATE_CENTROID = 5
 MINIMUM_ANGLE_DEGREE = 178
-MAXIMUM_CENTROID_DISTANCE = (1E-2)
+MAXIMUM_CENTROID_DISTANCE = (1E-3*3)
 
-def stabilize(x_point, y_point, index_finger_tip_x : list, index_finger_tip_y : list, is_calculate_centroid = True, is_smoothen = True):
-    
-    if(is_calculate_centroid):
-        if(len(index_finger_tip_x) >= MINIMUM_POINT_TO_CALCULATE_CENTROID):
-            last_x = index_finger_tip_x[len(index_finger_tip_x) - 1]
-            last_y = index_finger_tip_y[len(index_finger_tip_y) - 1]
+def get_stabilize_function (stabilize_type):
+    if stabilize_type == CALCULATE_CENTROID_1:
+        return calculate_centroid_1
+    elif stabilize_type == CALCULATE_CENTROID_2:
+        return calculate_centroid_2
+    elif stabilize_type == SLOW_MOVE:
+        return slow_move
+    elif stabilize_type == SLOW_MOVE_WITH_MINIMUM_ANGLE:
+        return slow_move_with_minimum_angle
+    elif stabilize_type == NO_STABILIZER:
+        return no_stabilizer
+    else:
+        return no_stabilizer
 
-            is_not_moving = find_if_moving(x_point, y_point, index_finger_tip_x, index_finger_tip_y)
-            if is_not_moving:
-                index_finger_tip_x.clear()
-                index_finger_tip_y.clear()
 
-                for _ in range(0, MINIMUM_POINT_TO_CALCULATE_CENTROID):
-                    index_finger_tip_x.append(last_x)
-                    index_finger_tip_y.append(last_y)
+def no_stabilizer (finger_tip_x : list, finger_tip_y : list, _ : list):
+    x_point = finger_tip_x[len(finger_tip_x) - 1]
+    y_point = finger_tip_y[len(finger_tip_y) - 1]
 
-                return last_x, last_y
+    return [x_point, y_point]
 
-    if is_smoothen :    
-        if(len(index_finger_tip_x) >= MINIMUM_POINT_TO_CALCULATE_ANGLE) :
-            last_x = index_finger_tip_x[len(index_finger_tip_x) - 1]
-            last_y = index_finger_tip_y[len(index_finger_tip_y) - 1]
+def calculate_centroid_1 (finger_tip_x : list, finger_tip_y : list, last_centroid : list):
+    if len(finger_tip_x) > 0:
+        x_point = finger_tip_x[len(finger_tip_x) - 1]
+        y_point = finger_tip_y[len(finger_tip_y) - 1]
 
-            before_last_x = index_finger_tip_x[len(index_finger_tip_x) - 2]
-            before_last_y = index_finger_tip_y[len(index_finger_tip_y) - 2]
-            
-            vA = [(last_x - x_point), (last_y - y_point)]
-            vB = [(last_x - before_last_x), (last_y - before_last_y)]
-
-            angle = ang(vA, vB)
-
-            if angle < MINIMUM_ANGLE_DEGREE:
-                return smoothen_point(x_point, y_point, last_x, last_y)
-
-    return x_point, y_point
-
-def find_if_moving(x_point, y_point, index_finger_tip_x, index_finger_tip_y):
-    x_sum = sum(index_finger_tip_x)
-    x_total = len(index_finger_tip_x)
-
-    y_sum = sum(index_finger_tip_y)
-    y_total = len(index_finger_tip_y)
-
-    x_centroid = x_sum/x_total
-    y_centroid = y_sum/y_total
-
-    distance = math.sqrt( (x_point - x_centroid)**2 + (y_point - y_centroid)**2 )
-
-    if distance > MAXIMUM_CENTROID_DISTANCE:
-        # print(distance)
-        return False
-    else :
-        return True
-
-def smoothen_point(x_point, y_point, last_x, last_y):
-    x_point = last_x + (x_point - last_x) / SMOOTHENING_POINT
-    y_point = last_y + (y_point - last_y) / SMOOTHENING_POINT
+        if len(last_centroid) == 0:
+            return [x_point, y_point]
         
-    return x_point, y_point
+        if len(finger_tip_x) >= MINIMUM_POINT_TO_CALCULATE_CENTROID:
+            last_centroid_x = last_centroid[0]
+            last_centroid_y = last_centroid[1]
+            new_centroid_x, new_centroid_y = find_centroid(finger_tip_x, finger_tip_y)
+            
+            distance = math.sqrt( (last_centroid_x - new_centroid_x)**2 + (last_centroid_y - new_centroid_y)**2 )
 
-def dot(vA, vB):
-    return vA[0]*vB[0]+vA[1]*vB[1]
+            print(distance)
 
-def ang(vA, vB):
-    # Get nicer vector form
-    # Get dot prod
-    dot_prod = dot(vA, vB)
-    # Get magnitudes
-    magA = dot(vA, vA)**0.5
-    magB = dot(vB, vB)**0.5
+            if distance > MAXIMUM_CENTROID_DISTANCE:
+                # print(distance)
+                return [new_centroid_x, new_centroid_y]
+            else :
+                return last_centroid
+        else:
+            return [x_point, y_point]
+    else:
+        return []
 
-    # If same point, then 0 degree
-    if magA == 0 or magB == 0:
-        return 0
+def calculate_centroid_2 (finger_tip_x : list, finger_tip_y : list, _):
+        x_point = finger_tip_x[len(finger_tip_x) - 1]
+        y_point = finger_tip_y[len(finger_tip_y) - 1]
 
-    # Get cosine value
-    cos_ = dot_prod/magA/magB
-    # Get angle in radians and then convert to degrees
-    angle = math.acos(cos_)
-    # Basically doing angle <- angle mod 360
-    ang_deg = math.degrees(angle)%360
+        last_x = finger_tip_x[len(finger_tip_x) - 2]
+        last_y = finger_tip_y[len(finger_tip_y) - 2]
 
-    if ang_deg-180>=0:
-        # As in if statement
-        return 360 - ang_deg
-    else: 
-        return ang_deg
+        x_centroid, y_centroid = find_centroid(finger_tip_x, finger_tip_y)
+
+        distance = math.sqrt( (x_point - x_centroid)**2 + (y_point - y_centroid)**2 )
+
+        if distance > MAXIMUM_CENTROID_DISTANCE:
+            # print(distance)
+            is_not_moving = False
+        else :
+            is_not_moving = True
+
+        if is_not_moving:
+            finger_tip_x.clear()
+            finger_tip_y.clear()
+
+            for _ in range(0, MINIMUM_POINT_TO_CALCULATE_CENTROID):
+                finger_tip_x.append(last_x)
+                finger_tip_y.append(last_y)
+
+            return [last_x, last_y]
+        else:
+            return [x_point, y_point]
+
+def slow_move(finger_tip_x : list, finger_tip_y : list, _):
+    new_x_point = finger_tip_x[len(finger_tip_x) - 1]
+    new_y_point = finger_tip_y[len(finger_tip_y) - 1]
+
+    last_old_x = finger_tip_x[len(finger_tip_x) - 2]
+    last_old_y = finger_tip_y[len(finger_tip_y) - 2]
+
+    x_point = last_old_x + (new_x_point - last_old_x) / SMOOTHENING_POINT
+    y_point = last_old_y + (new_y_point - last_old_y) / SMOOTHENING_POINT
+        
+    return [x_point, y_point]
+
+def slow_move_with_minimum_angle(finger_tip_x : list, finger_tip_y : list, _):
+    new_x_point = finger_tip_x[len(finger_tip_x) - 1]
+    new_y_point = finger_tip_y[len(finger_tip_y) - 1]
+        
+    if(len(finger_tip_x) >= MINIMUM_POINT_TO_CALCULATE_ANGLE) :
+        
+        last_x = finger_tip_x[len(finger_tip_x) - 2]
+        last_y = finger_tip_y[len(finger_tip_y) - 2]
+
+        before_last_x = finger_tip_x[len(finger_tip_x) - 3]
+        before_last_y = finger_tip_y[len(finger_tip_y) - 3]
+        
+        vA = [(last_x - new_x_point), (last_y - new_y_point)]
+        vB = [(last_x - before_last_x), (last_y - before_last_y)]
+
+        angle = find_angle(vA, vB)
+
+        if angle < MINIMUM_ANGLE_DEGREE:
+            return slow_move(finger_tip_x, finger_tip_y, _)
+    
+    return [new_x_point, new_y_point]

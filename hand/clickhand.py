@@ -6,13 +6,13 @@ import math
 import mouse
 
 class ClickHand(Hand):
-    _max_click_distance = 0.2
+    _max_click_distance = 0.17
 
     _is_pressed = True
     _current_release_state_count = 0
     _current_release_state = RELEASE_STATE
 
-    _current_click_state = ''
+    _current_click_state = POINTER_STATE
 
     _selected_hand = None
 
@@ -45,8 +45,8 @@ class ClickHand(Hand):
         elif button == mouse.RIGHT:
             click_box = self._right_click_box
 
-        is_index_in_box, x_index_in_box, y_index_in_box = click_box.finger_in_box(self._index_finger_tip_x, self._index_finger_tip_y)
-        is_thumb_in_box, x_thumb_in_box, y_thumb_in_box = click_box.finger_in_box(self._thumb_finger_tip_x, self._thumb_finger_tip_y)
+        is_index_in_box, x_index_in_box, y_index_in_box = click_box.finger_in_box(self._index_finger_centroid[0], self._index_finger_centroid[1])
+        is_thumb_in_box, x_thumb_in_box, y_thumb_in_box = click_box.finger_in_box(self._thumb_finger_centroid[0], self._thumb_finger_centroid[1])
         
         if is_index_in_box and is_thumb_in_box:
             self._selected_hand = button
@@ -63,7 +63,7 @@ class ClickHand(Hand):
 
                     self._is_pressed = True
                     self._current_click_state = DISPLAY_FORMAT.format(state = CLICK_STATE, button = button)
-                    mouse.press(button = button)
+                    # mouse.press(button = button)
                 else:
                     self._current_click_state = DISPLAY_FORMAT.format(state = DRAG_STATE, button = button)
             else:
@@ -73,7 +73,7 @@ class ClickHand(Hand):
                 self._current_release_state = RELEASE_STATE
                 self._current_release_state_count = self._current_release_state_count + 1
                 if self._current_release_state == RELEASE_STATE and self._current_release_state_count >= self.MINIMUM_POINTER_STATE_COUNT and self._is_pressed:
-                    mouse.release(button = button)
+                    # mouse.release(button = button)
                     self._is_pressed = False
                     self._current_click_state = POINTER_STATE
         else:
