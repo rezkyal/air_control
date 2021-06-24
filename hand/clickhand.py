@@ -1,3 +1,4 @@
+from settings.hand_settings import CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN, CLICK_HAND_LEFT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_TIP_POINT_COLORS, IS_CLICK_HAND_ON, MAX_CLICK_DISTANCE, MAX_TIP_POINTS
 from constant.click_state import CLICK_STATE, DISPLAY_FORMAT, DRAG_STATE, POINTER_STATE
 from constant.release_state import RELEASE_STATE, PRESS_STATE
 from box import Box
@@ -6,8 +7,6 @@ import math
 import mouse
 
 class ClickHand(Hand):
-    _max_click_distance = 0.17
-
     _is_pressed = True
     _current_release_state_count = 0
     _current_release_state = RELEASE_STATE
@@ -25,17 +24,17 @@ class ClickHand(Hand):
     _box_end_point = (0, 0)
     _box_color = (0, 0, 0)
 
-    def __init__(self, tip_color, box_color, camera_width, camera_height) -> None:
-        super().__init__(tip_color, camera_width, camera_height)
-        self._left_click_box = Box(camera_width, camera_height, box_color, box_left_percentage = 0.15, box_bottom_percentage = 0.2, box_size_to_screen = 0.15)
-        self._right_click_box = Box(camera_width, camera_height, box_color, box_left_percentage = 0.15, box_bottom_percentage = 0.45, box_size_to_screen = 0.15)
+    def __init__(self, camera_width, camera_height) -> None:
+        super().__init__(CLICK_HAND_TIP_POINT_COLORS, camera_width, camera_height, MAX_TIP_POINTS)
+        self._left_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN)
+        self._right_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN)
 
     def draw_box(self, image):
         self._right_click_box.draw_box(image)
         self._left_click_box.draw_box(image)
 
     def update_finger_tip(self, hand_landmarks, mp_hands, image):
-        super().update_finger_tip(hand_landmarks, mp_hands, image, is_smoothen = False)
+        super().update_finger_tip(hand_landmarks, mp_hands, image)
         self.check_and_execute_click(mouse.LEFT)
         self.check_and_execute_click(mouse.RIGHT)
 
@@ -53,7 +52,7 @@ class ClickHand(Hand):
 
             distance = math.sqrt( (x_index_in_box - x_thumb_in_box)**2 + (y_index_in_box - y_thumb_in_box)**2)
             
-            if distance < self._max_click_distance:
+            if distance < MAX_CLICK_DISTANCE:
                 if not self._is_pressed:
                     if self._current_release_state == PRESS_STATE:
                         self._current_release_state_count = 0
@@ -63,7 +62,8 @@ class ClickHand(Hand):
 
                     self._is_pressed = True
                     self._current_click_state = DISPLAY_FORMAT.format(state = CLICK_STATE, button = button)
-                    # mouse.press(button = button)
+                    if IS_CLICK_HAND_ON:
+                        mouse.press(button = button)
                 else:
                     self._current_click_state = DISPLAY_FORMAT.format(state = DRAG_STATE, button = button)
             else:
@@ -73,7 +73,8 @@ class ClickHand(Hand):
                 self._current_release_state = RELEASE_STATE
                 self._current_release_state_count = self._current_release_state_count + 1
                 if self._current_release_state == RELEASE_STATE and self._current_release_state_count >= self.MINIMUM_POINTER_STATE_COUNT and self._is_pressed:
-                    # mouse.release(button = button)
+                    if IS_CLICK_HAND_ON:
+                        mouse.release(button = button)
                     self._is_pressed = False
                     self._current_click_state = POINTER_STATE
         else:

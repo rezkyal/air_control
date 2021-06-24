@@ -1,3 +1,4 @@
+from settings.hand_settings import IS_POINTER_HAND_ON, MAX_TIP_POINTS, POINTER_HAND_BOTTOM_BOX_PERCENTAGE, POINTER_HAND_BOX_COLOR, POINTER_HAND_BOX_SIZE_TO_SCREEN, POINTER_HAND_LEFT_BOX_PERCENTAGE, POINTER_HAND_TIP_POINT_COLORS
 from box import Box
 from .hand import Hand
 import mouse
@@ -9,9 +10,11 @@ class PointerHand(Hand):
 
     _pointer_box = None
 
-    def __init__(self, tip_color, box_color, camera_width, camera_height) -> None:
-        super().__init__(tip_color, camera_width, camera_height)
-        self._pointer_box = Box(camera_width, camera_height, box_color, box_left_percentage = 0.4, box_bottom_percentage = 0.3, box_size_to_screen = 0.45)
+    def __init__(self, camera_width, camera_height, monitor_width, monitor_height) -> None:
+        super().__init__(POINTER_HAND_TIP_POINT_COLORS, camera_width, camera_height, MAX_TIP_POINTS)
+        self._pointer_box = Box(camera_width, camera_height, POINTER_HAND_BOX_COLOR, POINTER_HAND_LEFT_BOX_PERCENTAGE, POINTER_HAND_BOTTOM_BOX_PERCENTAGE, POINTER_HAND_BOX_SIZE_TO_SCREEN)
+        self._monitor_width = monitor_width
+        self._monitor_height = monitor_height
 
     def draw_box(self, image):
         self._pointer_box.draw_box(image)
@@ -28,8 +31,5 @@ class PointerHand(Hand):
                 x_mouse_monitor = x_in_box_percentage * self._monitor_width
                 y_mouse_monitor = y_in_box_percentage * self._monitor_height
 
-                mouse.move(x_mouse_monitor, y_mouse_monitor)    
-
-    def update_monitor_size(self, monitor_width, monitor_height):
-        self._monitor_width = monitor_width
-        self._monitor_height = monitor_height
+                if IS_POINTER_HAND_ON:
+                    mouse.move(x_mouse_monitor, y_mouse_monitor)    

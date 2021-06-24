@@ -1,12 +1,7 @@
+from settings.stabilizer_settings import MAXIMUM_CENTROID_DISTANCE, MINIMUM_ANGLE_DEGREE, MINIMUM_TIP_POINT_TO_CALCULATE_ANGLE, MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID, SLOWING_POINT
 from calculate_function import find_angle, find_centroid
 from constant.stabilize_type import CALCULATE_CENTROID_1, CALCULATE_CENTROID_2, NO_STABILIZER, SLOW_MOVE, SLOW_MOVE_WITH_MINIMUM_ANGLE
 import math
-
-SMOOTHENING_POINT = 30
-MINIMUM_POINT_TO_CALCULATE_ANGLE = 2
-MINIMUM_POINT_TO_CALCULATE_CENTROID = 5
-MINIMUM_ANGLE_DEGREE = 178
-MAXIMUM_CENTROID_DISTANCE = (1E-3*3)
 
 def get_stabilize_function (stabilize_type):
     if stabilize_type == CALCULATE_CENTROID_1:
@@ -37,14 +32,12 @@ def calculate_centroid_1 (finger_tip_x : list, finger_tip_y : list, last_centroi
         if len(last_centroid) == 0:
             return [x_point, y_point]
         
-        if len(finger_tip_x) >= MINIMUM_POINT_TO_CALCULATE_CENTROID:
+        if len(finger_tip_x) >= MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID:
             last_centroid_x = last_centroid[0]
             last_centroid_y = last_centroid[1]
             new_centroid_x, new_centroid_y = find_centroid(finger_tip_x, finger_tip_y)
             
             distance = math.sqrt( (last_centroid_x - new_centroid_x)**2 + (last_centroid_y - new_centroid_y)**2 )
-
-            print(distance)
 
             if distance > MAXIMUM_CENTROID_DISTANCE:
                 # print(distance)
@@ -77,7 +70,7 @@ def calculate_centroid_2 (finger_tip_x : list, finger_tip_y : list, _):
             finger_tip_x.clear()
             finger_tip_y.clear()
 
-            for _ in range(0, MINIMUM_POINT_TO_CALCULATE_CENTROID):
+            for _ in range(0, MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID):
                 finger_tip_x.append(last_x)
                 finger_tip_y.append(last_y)
 
@@ -92,8 +85,8 @@ def slow_move(finger_tip_x : list, finger_tip_y : list, _):
     last_old_x = finger_tip_x[len(finger_tip_x) - 2]
     last_old_y = finger_tip_y[len(finger_tip_y) - 2]
 
-    x_point = last_old_x + (new_x_point - last_old_x) / SMOOTHENING_POINT
-    y_point = last_old_y + (new_y_point - last_old_y) / SMOOTHENING_POINT
+    x_point = last_old_x + (new_x_point - last_old_x) / SLOWING_POINT
+    y_point = last_old_y + (new_y_point - last_old_y) / SLOWING_POINT
         
     return [x_point, y_point]
 
@@ -101,7 +94,7 @@ def slow_move_with_minimum_angle(finger_tip_x : list, finger_tip_y : list, _):
     new_x_point = finger_tip_x[len(finger_tip_x) - 1]
     new_y_point = finger_tip_y[len(finger_tip_y) - 1]
         
-    if(len(finger_tip_x) >= MINIMUM_POINT_TO_CALCULATE_ANGLE) :
+    if(len(finger_tip_x) >= MINIMUM_TIP_POINT_TO_CALCULATE_ANGLE) :
         
         last_x = finger_tip_x[len(finger_tip_x) - 2]
         last_y = finger_tip_y[len(finger_tip_y) - 2]

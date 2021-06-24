@@ -23,14 +23,8 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, webcam_height)
 
 hand_index = []
 
-green = (255, 0, 0)
-blue = (0, 255, 0)
-red = (0, 0, 255)
-lavender = (230, 230, 250)
-
-click_hand = ClickHand(green, red, webcam_width, webcam_height)
-pointer_hand = PointerHand(blue, lavender, webcam_width, webcam_height)
-pointer_hand.update_monitor_size(monitor_width, monitor_height)
+click_hand = ClickHand(webcam_width, webcam_height)
+pointer_hand = PointerHand(webcam_width, webcam_height, monitor_width, monitor_height)
 
 pTime = 0
 with mp_hands.Hands(
