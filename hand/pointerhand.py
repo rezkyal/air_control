@@ -8,11 +8,13 @@ class PointerHand(Hand):
     _monitor_width = 0
     _monitor_height = 0
 
+    POINTER_HAND_BOX_NAME = "pointer"
+
     _pointer_box = None
 
     def __init__(self, camera_width, camera_height, monitor_width, monitor_height) -> None:
         super().__init__(POINTER_HAND_TIP_POINT_COLORS, camera_width, camera_height, MAX_TIP_POINTS)
-        self._pointer_box = Box(camera_width, camera_height, POINTER_HAND_BOX_COLOR, POINTER_HAND_LEFT_BOX_PERCENTAGE, POINTER_HAND_BOTTOM_BOX_PERCENTAGE, POINTER_HAND_BOX_SIZE_TO_SCREEN)
+        self._pointer_box = Box(camera_width, camera_height, POINTER_HAND_BOX_COLOR, POINTER_HAND_LEFT_BOX_PERCENTAGE, POINTER_HAND_BOTTOM_BOX_PERCENTAGE, POINTER_HAND_BOX_SIZE_TO_SCREEN, self.POINTER_HAND_BOX_NAME)
         self._monitor_width = monitor_width
         self._monitor_height = monitor_height
 

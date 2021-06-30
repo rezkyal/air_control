@@ -20,14 +20,17 @@ class ClickHand(Hand):
 
     MINIMUM_POINTER_STATE_COUNT = 3
 
+    LEFT_CLICK_BOX_NAME = "left click"
+    RIGHT_CLICK_BOX_NAME = "right click"
+
     _box_start_point = (0, 0)
     _box_end_point = (0, 0)
     _box_color = (0, 0, 0)
 
     def __init__(self, camera_width, camera_height) -> None:
         super().__init__(CLICK_HAND_TIP_POINT_COLORS, camera_width, camera_height, MAX_TIP_POINTS)
-        self._left_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN)
-        self._right_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN)
+        self._left_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN, self.LEFT_CLICK_BOX_NAME)
+        self._right_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN, self.RIGHT_CLICK_BOX_NAME)
 
     def draw_box(self, image):
         self._right_click_box.draw_box(image)

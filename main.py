@@ -1,33 +1,41 @@
+from hand.pointerhand import PointerHand
+from hand.clickhand import ClickHand
 import cv2
 import mediapipe as mp
-import mouse
 import time
 import screeninfo
 
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
 
-FULL_INDEX_SIZE = 5
-index_finger_tip_x = []
-index_finger_tip_y = []
-
-thumb_finger_tip_x = []
-thumb_finger_tip_y = []
-
-# For webcam input:
-cap = cv2.VideoCapture(0)
-
 monitor = screeninfo.get_monitors()[0]
 monitor_width = monitor.width
 monitor_height = monitor.height
 
+webcam_width = 1280
+webcam_height = 720
+
+# For webcam input:
+cap = cv2.VideoCapture(0)
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, webcam_width)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, webcam_height)
+
+hand_index = []
+
+click_hand = ClickHand(webcam_width, webcam_height)
+pointer_hand = PointerHand(webcam_width, webcam_height, monitor_width, monitor_height)
+
 pTime = 0
 with mp_hands.Hands(
-    min_detection_confidence=0.50,
-    min_tracking_confidence=0.50) as hands:
+    min_detection_confidence=0.70,
+    min_tracking_confidence=0.70) as hands:
     while cap.isOpened():
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+        is_click_hand_tracking = click_hand.get_is_tracking()
+        is_pointer_hand_tracking = pointer_hand.get_is_tracking()
 
         success, image = cap.read()
         if not success:
@@ -47,78 +55,43 @@ with mp_hands.Hands(
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-        print('Handedness:', results.multi_handedness)
         if results.multi_hand_landmarks:
-            print(len(results.multi_hand_landmarks))
-            
-            for hand_landmarks in results.multi_hand_landmarks:
-                # print(
-                #     f'Index finger tip coordinates: (',
-                #     f'{hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x}, '
-                #     f'{hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y}, '
-                #     f'{hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].z})'
-                # )
 
-                # x_point_thumb = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x
-                # y_point_thumb = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y
+            hand_index = []
+            for each_hand in results.multi_handedness:
+                hand_index.append(each_hand.classification[0].label)
 
-                # x_point_index = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x
-                # y_point_index = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y
+            for iteration in range(0, len(hand_index)):
+                if hand_index[iteration] == "Right" :
+                    if not is_pointer_hand_tracking:
+                        pointer_hand.begin_tracking()
+                    hand_landmarks = results.multi_hand_landmarks[iteration]
+                    pointer_hand.update_finger_tip(hand_landmarks, mp_hands, image)
 
-                # x_point_index, y_point_index = smoothening.smoothening(x_point_index, y_point_index, index_finger_tip_x, index_finger_tip_y)
-                # x_point_thumb, y_point_thumb = smoothening.smoothening(x_point_thumb, y_point_thumb, thumb_finger_tip_x, thumb_finger_tip_y)
-
-                # index_finger_tip_x.append(x_point_index)
-                # index_finger_tip_y.append(y_point_index)
-
-                # thumb_finger_tip_x.append(x_point_thumb)
-                # thumb_finger_tip_y.append(y_point_thumb)
-
-                mp_drawing.draw_landmarks(
-                    image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-
-        # else:
-        #     index_finger_tip_x = []
-        #     index_finger_tip_y = []
-
-        #     thumb_finger_tip_x = []
-        #     thumb_finger_tip_y = []
-
-        # if len(index_finger_tip_x) > 1:
-
-        #     for iteration in range (0, len(thumb_finger_tip_x)-1):
-        #         x1 = int(thumb_finger_tip_x[iteration] * width)
-        #         y1 = int(thumb_finger_tip_y[iteration] * height)
-        #         x2 = int(thumb_finger_tip_x[iteration + 1] * width)
-        #         y2 = int(thumb_finger_tip_y[iteration + 1] * height)
-        #         cv2.line(image, (x1, y1), (x2, y2), (0,255,0), 2)
-
-        #     for iteration in range (0, len(index_finger_tip_x)-1):
-        #         x1 = int(index_finger_tip_x[iteration] * width)
-        #         y1 = int(index_finger_tip_y[iteration] * height)
-        #         x2 = int(index_finger_tip_x[iteration + 1] * width)
-        #         y2 = int(index_finger_tip_y[iteration + 1] * height)
-        #         cv2.line(image, (x1, y1), (x2, y2), (0,0,255), 2)
-
-
-        #     x_mouse_monitor = index_finger_tip_x[len(index_finger_tip_x) - 1] * monitor_width
-        #     y_mouse_monitor = index_finger_tip_y[len(index_finger_tip_y) - 1] * monitor_height
-
-        #     # mouse.move(x_mouse_monitor, y_mouse_monitor)
-
+                elif hand_index[iteration]  == "Left" :
+                    if not is_click_hand_tracking:
+                        click_hand.begin_tracking()
+                    hand_landmarks = results.multi_hand_landmarks[iteration]
+                    click_hand.update_finger_tip(hand_landmarks, mp_hands, image)
         
-        # while len(index_finger_tip_x) > FULL_INDEX_SIZE:
-        #     index_finger_tip_x.pop(0)
-        #     index_finger_tip_y.pop(0)
-        #     thumb_finger_tip_x.pop(0)
-        #     thumb_finger_tip_y.pop(0)
+        else:
+            click_hand.stop_tracking()
+            pointer_hand.stop_tracking()
+        
+        click_hand.draw_box(image)
+        pointer_hand.draw_box(image)
 
         cTime = time.time()
         fps = 1/(cTime - pTime)
         pTime = cTime
         cv2.putText(image, str(int(fps)), (20,50), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,0), 3)
 
+        click_state = click_hand.get_current_click_state()
+        org_x = monitor_width - 100
+        cv2.putText(image, click_state, (1000,50), cv2.FONT_HERSHEY_PLAIN, 2, (255,0,0), 3)
+
         cv2.imshow('MediaPipe Hands', image)
         if cv2.waitKey(5) & 0xFF == 27:
             break
+
 cap.release()

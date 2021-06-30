@@ -2,6 +2,7 @@ import cv2
 
 class Box:
 
+    _box_name = ""
     _box_start_point = (0, 0)
     _box_end_point = (0, 0)
     _box_color = (0, 0, 0)
@@ -9,10 +10,11 @@ class Box:
     _camera_width = 0
     _camera_height = 0
 
-    def __init__(self, camera_width, camera_height, box_color, box_left_percentage, box_bottom_percentage, box_size_to_screen) -> None:
+    def __init__(self, camera_width, camera_height, box_color, box_left_percentage, box_bottom_percentage, box_size_to_screen, box_name) -> None:
         self._camera_width = camera_width
         self._camera_height = camera_height
         self._box_color = box_color
+        self._box_name = box_name
         self.calculate_box_point(box_left_percentage, box_bottom_percentage, box_size_to_screen)
 
     def calculate_box_point(self, box_left_percentage, box_bottom_percentage, box_size_to_screen):
@@ -26,6 +28,8 @@ class Box:
 
     def draw_box(self, image):
         cv2.rectangle(image, self._box_start_point, self._box_end_point, self._box_color, 3)
+        text_start_point = (self._box_start_point[0], self._box_start_point[1] - 15)
+        cv2.putText(image, str(self._box_name), text_start_point, cv2.FONT_HERSHEY_COMPLEX, 1, self._box_color, 3)
 
     def finger_in_box(self, centroid_x, centroid_y):
         centroid_x_in_camera = centroid_x * self._camera_width

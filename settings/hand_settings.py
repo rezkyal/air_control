@@ -1,7 +1,6 @@
 IS_CLICK_HAND_ON = False
 IS_POINTER_HAND_ON = False
 
-
 # max tip points tracked, will effect for stabilizer function
 MAX_TIP_POINTS = 5
 
