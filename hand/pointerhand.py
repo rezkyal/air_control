@@ -34,4 +34,5 @@ class PointerHand(Hand):
                 y_mouse_monitor = y_in_box_percentage * self._monitor_height
 
                 if IS_POINTER_HAND_ON:
-                    mouse.move(x_mouse_monitor, y_mouse_monitor)    
+                    print(x_mouse_monitor, y_mouse_monitor)
+                    mouse.move(x_mouse_monitor, y_mouse_monitor)

@@ -49,6 +49,7 @@ with mp_hands.Hands(
         # To improve performance, optionally mark the image as not writeable to
         # pass by reference.
         image.flags.writeable = False
+        used_image = cv2.resize
         results = hands.process(image)
 
         # Draw the hand annotations on the image.

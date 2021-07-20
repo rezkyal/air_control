@@ -40,7 +40,6 @@ def calculate_centroid_1 (finger_tip_x : list, finger_tip_y : list, last_centroi
             distance = math.sqrt( (last_centroid_x - new_centroid_x)**2 + (last_centroid_y - new_centroid_y)**2 )
 
             if distance > MAXIMUM_CENTROID_DISTANCE:
-                # print(distance)
                 return [new_centroid_x, new_centroid_y]
             else :
                 return last_centroid
@@ -61,7 +60,6 @@ def calculate_centroid_2 (finger_tip_x : list, finger_tip_y : list, _):
         distance = math.sqrt( (x_point - x_centroid)**2 + (y_point - y_centroid)**2 )
 
         if distance > MAXIMUM_CENTROID_DISTANCE:
-            # print(distance)
             is_not_moving = False
         else :
             is_not_moving = True
