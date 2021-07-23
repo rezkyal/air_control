@@ -1,6 +1,7 @@
 from constant import stabilize_type
 
-STABILIZER_FUNCTION = stabilize_type.CALCULATE_CENTROID_1
+STABILIZER_FUNCTION_POINTER = stabilize_type.CALCULATE_CENTROID_1
+STABILIZER_FUNCTION_CLICK = stabilize_type.CALCULATE_CENTROID_2
 
 # Stabilizer setting
 # used in SLOW_MOVE and SLOW_MOVE_WITH_MINIMUM_ANGLE, the higher the point the slower the movement

@@ -4,6 +4,7 @@ import cv2
 import mediapipe as mp
 import time
 import screeninfo
+from settings import camera_settings
 
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
@@ -12,8 +13,8 @@ monitor = screeninfo.get_monitors()[0]
 monitor_width = monitor.width
 monitor_height = monitor.height
 
-webcam_width = 1280
-webcam_height = 720
+webcam_width = camera_settings.CAMERA_WIDTH
+webcam_height = camera_settings.CAMERA_HEIGHT
 
 # For webcam input:
 cap = cv2.VideoCapture(0)
@@ -38,6 +39,7 @@ with mp_hands.Hands(
         is_pointer_hand_tracking = pointer_hand.get_is_tracking()
 
         success, image = cap.read()
+        
         if not success:
             print("Ignoring empty camera frame.")
             # If loading a video, use 'break' instead of 'continue'.

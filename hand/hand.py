@@ -1,6 +1,5 @@
 import stabilizer
 import cv2
-from settings.stabilizer_settings import STABILIZER_FUNCTION
 
 class Hand:
 
@@ -19,13 +18,16 @@ class Hand:
     _camera_width = 0
     _camera_height = 0
 
+    _stabilizer_function = None
+
     _tip_color = (0, 0, 0)
 
-    def __init__(self, tip_color, camera_width, camera_height, max_tip_point) -> None:
+    def __init__(self, tip_color, camera_width, camera_height, max_tip_point, stabilizer_function) -> None:
         self._tip_color = tip_color
         self._camera_width = camera_width
         self._camera_height = camera_height
         self._max_tip_point = max_tip_point
+        self._stabilizer_function = stabilizer.get_stabilize_function(stabilizer_function)
 
     def get_is_tracking(self):
         return self._is_tracking
@@ -56,10 +58,8 @@ class Hand:
         # x_point_index, y_point_index = stabilizer.stabilize(x_point_index, y_point_index, self._index_finger_tip_x, self._index_finger_tip_y, is_calculate_centroid, is_smoothen)
         # x_point_thumb, y_point_thumb = stabilizer.stabilize(x_point_thumb, y_point_thumb, self._thumb_finger_tip_x, self._thumb_finger_tip_y, is_calculate_centroid, is_smoothen)
 
-        stabilizer_function = stabilizer.get_stabilize_function(STABILIZER_FUNCTION)
-
-        self._index_finger_centroid = stabilizer_function(self._index_finger_tip_x, self._index_finger_tip_y, self._index_finger_centroid)
-        self._thumb_finger_centroid = stabilizer_function(self._thumb_finger_tip_x, self._thumb_finger_tip_y, self._thumb_finger_centroid)
+        self._index_finger_centroid = self._stabilizer_function(self._index_finger_tip_x, self._index_finger_tip_y, self._index_finger_centroid)
+        self._thumb_finger_centroid = self._stabilizer_function(self._thumb_finger_tip_x, self._thumb_finger_tip_y, self._thumb_finger_centroid)
 
         if len(self._index_finger_tip_x) > 1:
 

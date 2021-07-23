@@ -5,6 +5,7 @@ from box import Box
 from .hand import Hand
 import math
 import mouse
+from settings.stabilizer_settings import STABILIZER_FUNCTION_CLICK
 
 class ClickHand(Hand):
     _is_pressed = True
@@ -28,7 +29,7 @@ class ClickHand(Hand):
     _box_color = (0, 0, 0)
 
     def __init__(self, camera_width, camera_height) -> None:
-        super().__init__(CLICK_HAND_TIP_POINT_COLORS, camera_width, camera_height, MAX_TIP_POINTS)
+        super().__init__(CLICK_HAND_TIP_POINT_COLORS, camera_width, camera_height, MAX_TIP_POINTS, STABILIZER_FUNCTION_CLICK)
         self._left_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN, self.LEFT_CLICK_BOX_NAME)
         self._right_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN, self.RIGHT_CLICK_BOX_NAME)
 
