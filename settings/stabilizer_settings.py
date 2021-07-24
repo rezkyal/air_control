@@ -1,16 +1,16 @@
 from constant import stabilize_type
 
-STABILIZER_FUNCTION_POINTER = stabilize_type.CALCULATE_CENTROID_1
-STABILIZER_FUNCTION_CLICK = stabilize_type.CALCULATE_CENTROID_2
+STABILIZER_FUNCTION_POINTER = stabilize_type.SMOOTH_MOVE_WITH_MINIMUM_ANGLE
+STABILIZER_FUNCTION_CLICK = stabilize_type.SMOOTH_MOVE_WITH_MINIMUM_ANGLE
 
 # Stabilizer setting
-# used in SLOW_MOVE and SLOW_MOVE_WITH_MINIMUM_ANGLE, the higher the point the slower the movement
-SLOWING_POINT = 30
+# used in SMOOTH_MOVE and SMOOTH_MOVE_WITH_MINIMUM_ANGLE, the higher the point the slower and smoother the movement
+SMOOTHING_POINT = 30
 
-# used in SLOW_MOVE_WITH_MINIMUM_ANGLE, minimum tip point tracked before calculate angle
+# used in SMOOTH_MOVE_WITH_MINIMUM_ANGLE, minimum tip point tracked before calculate angle
 MINIMUM_TIP_POINT_TO_CALCULATE_ANGLE = 2
 
-# used in SLOW_MOVE_WITH_MINIMUM_ANGLE, how much minimum the angle between current and latest tip point to use slow function
+# used in SMOOTH_MOVE_WITH_MINIMUM_ANGLE, how much minimum the angle between current and latest tip point to use slow function
 MINIMUM_ANGLE_DEGREE = 178
 
 # used in CENTROID_1 and CENTROID_2, minimum tip point tracked before calculate centroid

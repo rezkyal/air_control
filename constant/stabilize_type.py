@@ -1,5 +1,5 @@
 CALCULATE_CENTROID_1 = "centroid_1"
 CALCULATE_CENTROID_2 = "centroid_2"
-SLOW_MOVE = "slow_move"
-SLOW_MOVE_WITH_MINIMUM_ANGLE = "slow_move_with_minimum_angle"
+SMOOTH_MOVE = "smooth_move"
+SMOOTH_MOVE_WITH_MINIMUM_ANGLE = "smooth_move_with_minimum_angle"
 NO_STABILIZER = "no_stabilizer"

@@ -1,4 +1,4 @@
-from settings.hand_settings import CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN, CLICK_HAND_LEFT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_TIP_POINT_COLORS, IS_CLICK_HAND_ON, MAX_CLICK_DISTANCE, MAX_TIP_POINTS
+from settings.hand_settings import CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_POSITION_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN, CLICK_HAND_LEFT_CLICK_LEFT_BOX_POSITION_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_POSITION_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_POSITION_PERCENTAGE, CLICK_HAND_TIP_POINT_COLORS, IS_CLICK_HAND_ON, MAX_CLICK_DISTANCE, MAX_TIP_POINTS
 from constant.click_state import CLICK_STATE, DISPLAY_FORMAT, DRAG_STATE, POINTER_STATE
 from constant.release_state import RELEASE_STATE, PRESS_STATE
 from box import Box
@@ -30,8 +30,8 @@ class ClickHand(Hand):
 
     def __init__(self, camera_width, camera_height) -> None:
         super().__init__(CLICK_HAND_TIP_POINT_COLORS, camera_width, camera_height, MAX_TIP_POINTS, STABILIZER_FUNCTION_CLICK)
-        self._left_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN, self.LEFT_CLICK_BOX_NAME)
-        self._right_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN, self.RIGHT_CLICK_BOX_NAME)
+        self._left_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_LEFT_CLICK_LEFT_BOX_POSITION_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOTTOM_BOX_POSITION_PERCENTAGE, CLICK_HAND_LEFT_CLICK_BOX_SIZE_TO_SCREEN, self.LEFT_CLICK_BOX_NAME)
+        self._right_click_box = Box(camera_width, camera_height, CLICK_HAND_BOX_COLOR, CLICK_HAND_RIGHT_CLICK_LEFT_BOX_POSITION_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOTTOM_BOX_POSITION_PERCENTAGE, CLICK_HAND_RIGHT_CLICK_BOX_SIZE_TO_SCREEN, self.RIGHT_CLICK_BOX_NAME)
 
     def draw_box(self, image):
         self._right_click_box.draw_box(image)
@@ -48,8 +48,8 @@ class ClickHand(Hand):
         elif button == mouse.RIGHT:
             click_box = self._right_click_box
 
-        is_index_in_box, x_index_in_box, y_index_in_box = click_box.finger_in_box(self._index_finger_centroid[0], self._index_finger_centroid[1])
-        is_thumb_in_box, x_thumb_in_box, y_thumb_in_box = click_box.finger_in_box(self._thumb_finger_centroid[0], self._thumb_finger_centroid[1])
+        is_index_in_box, x_index_in_box, y_index_in_box = click_box.finger_in_box(self._index_finger_position[0], self._index_finger_position[1])
+        is_thumb_in_box, x_thumb_in_box, y_thumb_in_box = click_box.finger_in_box(self._thumb_finger_position[0], self._thumb_finger_position[1])
         
         if is_index_in_box and is_thumb_in_box:
             self._selected_hand = button
@@ -90,5 +90,4 @@ class ClickHand(Hand):
                 self._current_release_state = RELEASE_STATE
 
     def get_current_click_state(self):
-        print(self._current_click_state)
         return self._current_click_state
