@@ -49,32 +49,32 @@ def calculate_centroid_1 (finger_tip_x : list, finger_tip_y : list, last_positio
         return []
 
 def calculate_centroid_2 (finger_tip_x : list, finger_tip_y : list, _):
-        x_point = finger_tip_x[len(finger_tip_x) - 1]
-        y_point = finger_tip_y[len(finger_tip_y) - 1]
+    x_point = finger_tip_x[len(finger_tip_x) - 1]
+    y_point = finger_tip_y[len(finger_tip_y) - 1]
 
-        last_x = finger_tip_x[len(finger_tip_x) - 2]
-        last_y = finger_tip_y[len(finger_tip_y) - 2]
+    last_x = finger_tip_x[len(finger_tip_x) - 2]
+    last_y = finger_tip_y[len(finger_tip_y) - 2]
 
-        x_centroid, y_centroid = find_centroid(finger_tip_x, finger_tip_y)
+    x_centroid, y_centroid = find_centroid(finger_tip_x, finger_tip_y)
 
-        distance = math.sqrt( (x_point - x_centroid)**2 + (y_point - y_centroid)**2 )
+    distance = math.sqrt( (x_point - x_centroid)**2 + (y_point - y_centroid)**2 )
 
-        if distance > MAXIMUM_CENTROID_DISTANCE:
-            is_not_moving = False
-        else :
-            is_not_moving = True
+    if distance > MAXIMUM_CENTROID_DISTANCE:
+        is_not_moving = False
+    else :
+        is_not_moving = True
 
-        if is_not_moving:
-            finger_tip_x.clear()
-            finger_tip_y.clear()
+    if is_not_moving:
+        finger_tip_x.clear()
+        finger_tip_y.clear()
 
-            for _ in range(0, MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID):
-                finger_tip_x.append(last_x)
-                finger_tip_y.append(last_y)
+        for _ in range(0, MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID):
+            finger_tip_x.append(last_x)
+            finger_tip_y.append(last_y)
 
-            return [last_x, last_y]
-        else:
-            return [x_point, y_point]
+        return [last_x, last_y]
+    else:
+        return [x_point, y_point]
 
 def smooth_move(finger_tip_x : list, finger_tip_y : list, _):
     new_x_point = finger_tip_x[len(finger_tip_x) - 1]
