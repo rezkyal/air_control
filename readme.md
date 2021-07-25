@@ -38,7 +38,7 @@ Makesure to use <b>XOrg</b> for the display server (Ubuntu 21.04 use wayland, yo
 Not yet tested
 
 ## Stabilizer
-Because the MediaPipe usually return unstable coordinate of a finger tip, and mouse is usually used with high stability, a stabilizer function is needed. this project have 4 options of stabilizers, you can choose which one you want to use and other value in <code>./settings/stabilizer_settings.py</code>. The stabilizer function will have 3 input parameter, the <code>finger_tip_x</code> and <code>finger_tip_y</code> list with <code>MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID</code> numbers of points, and <code>last_position</code> (the last tip coordinate). <code>finger_tip_x</code> and <code>finger_tip_y</code> list use FIFO mechanism to save value, updated each frame, with maximum number of <code>MAX_TIP_POINTS</code> values.
+Because the MediaPipe usually return unstable coordinate of a finger tip, and mouse is usually used with high stability, a stabilizer function is needed. This project have 4 options of stabilizers, you can choose which one you want to use and other value in <code>./settings/stabilizer_settings.py</code>. The stabilizer function will have 3 input parameter, the <code>finger_tip_x</code> and <code>finger_tip_y</code> list with <code>MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID</code> numbers of points, and <code>last_position</code> (the last tip coordinate). <code>finger_tip_x</code> and <code>finger_tip_y</code> list use FIFO mechanism to save value, updated each frame, with maximum number of <code>MAX_TIP_POINTS</code> values.
 
 ### Calculate Centroid 1
 This one is created to keep the persistance of the tip when the finger stopped, but keep it moving when finger moves
@@ -57,7 +57,7 @@ This one is created to keep the persistance of the tip when the finger stopped, 
 4. If the distance doesn't passthrough, then use the <code>last_position</code> value
 
 ### Smooth Move
-Source : [Youtube video](https://youtu.be/01sAkU_NvOY?t=23678)
+Source : [Youtube video](https://youtu.be/01sAkU_NvOY?t=23678)<br>
 Slowly move the point by dividing distance between last coordinate and current finger coordinate with <code>SMOOTHING_POINT</code>, and add it to the last coordinate so the next coordinate will not directly jump to the current finger coordinate, but slowly moving the point towards the current finger coordinate
 
 ### Smooth Move with Minimum Angle
