@@ -5,8 +5,10 @@ Create a virtual mouse using webcam, google [MediaPipe](https://github.com/googl
 <b>Before testing the virtual mouse, make sure you have saved and closed your important programs, the <em>ghost click</em>:ghost: can be very dangerous, use with full caution:exclamation::shipit:</b>
 
 ## Feature
-1. Place your right hand index finger in pointer box and it will translate your mouse position to your finger location
-1. Place your left hand index and thumb fingers in right click or left click box, and then make it close the distance to make it a click, or hold the close distance to drag
+1. Place right hand index finger in pointer box and it will translate your mouse position to your finger location ![Pointer GIF](docs/pointer_click.gif)
+1. Place left hand index and thumb fingers left click box, and then make it close the distance and release it to do a left click, do it twice to double left click ![Left click GIF](docs/left_click_and_double_click.gif)
+1. Place left hand index and thumb fingers right click box, and then make it close the distance and release it to do a right click ![Right click GIF](docs/right_click.gif)
+1. Place left hand index and thumb finger in left or right click box, and then make it close the distance and hold it to do a mouse drag, and release the hold it to drop![Drag GIF](docs/drag_and_drop_click.gif)
 
 ## Notes
 <ul>
