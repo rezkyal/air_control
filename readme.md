@@ -2,7 +2,7 @@
 
 Create a virtual mouse using camera, google MediaPipe, and openCV in python 
 
-<b>Before testing the virtual mouse, make sure you have save and close your important program, the <em>ghost click</em>:ghost: can be very dangerous, use with full caution:exclamation::shipit:</b>
+<b>Before testing the virtual mouse, make sure you have saved and closed your important programs, the <em>ghost click</em>:ghost: can be very dangerous, use with full caution:exclamation::shipit:</b>
 
 ## Notes
 <ul>
