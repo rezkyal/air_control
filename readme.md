@@ -4,6 +4,10 @@ Create a virtual mouse using camera, google MediaPipe, and openCV in python
 
 <b>Before testing the virtual mouse, make sure you have saved and closed your important programs, the <em>ghost click</em>:ghost: can be very dangerous, use with full caution:exclamation::shipit:</b>
 
+## Feature
+1. Place your right hand index finger in pointer box and it will translate your mouse position to your finger location
+1. Place your left hand index and thumb fingers in right click or left click box, and then make it close the distance to make it a click, or hold the close distance to drag
+
 ## Notes
 <ul>
     <li>Only able to detect a pair of hand per screen (if you show 2 right hand on screen, it will be recognized as one hand, so the coordinate will jump from one hand to another)</li>
@@ -34,7 +38,7 @@ Makesure to use <b>XOrg</b> for the display server (Ubuntu 21.04 use wayland, yo
 Not yet tested
 
 ## Stabilizer
-Because the MediaPipe usually return unstable coordinate of a finger tip, and mouse is usually used with high stability, a stabilizer function is needed. I have been implementing 4 options of stabilizer, you can choose which one you want to use and other value in <code>./settings/stabilizer_settings.py</code>. The stabilizer function will have 3 input parameter, the <code>finger_tip_x</code> and <code>finger_tip_y</code> list with <code>MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID</code> numbers of points, and <code>last_position</code> (the last tip coordinate). <code>finger_tip_x</code> and <code>finger_tip_y</code> list use FIFO mechanism to save value, updated each frame, with maximum number of <code>MAX_TIP_POINTS</code> values.
+Because the MediaPipe usually return unstable coordinate of a finger tip, and mouse is usually used with high stability, a stabilizer function is needed. this project have 4 options of stabilizers, you can choose which one you want to use and other value in <code>./settings/stabilizer_settings.py</code>. The stabilizer function will have 3 input parameter, the <code>finger_tip_x</code> and <code>finger_tip_y</code> list with <code>MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID</code> numbers of points, and <code>last_position</code> (the last tip coordinate). <code>finger_tip_x</code> and <code>finger_tip_y</code> list use FIFO mechanism to save value, updated each frame, with maximum number of <code>MAX_TIP_POINTS</code> values.
 
 ### Calculate Centroid 1
 This one is created to keep the persistance of the tip when the finger stopped, but keep it moving when finger moves
