@@ -88,6 +88,7 @@ class ClickHand(Hand):
                 self._current_release_state_count = 0
                 self._current_click_state = POINTER_STATE
                 self._current_release_state = RELEASE_STATE
+                mouse.release(button = button)
 
     def get_current_click_state(self):
         return self._current_click_state
