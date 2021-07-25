@@ -48,7 +48,7 @@ This one is created to keep the persistance of the tip when the finger stopped, 
 3. Calculate the distance between next coordinate centroid and the last position coordinate (<code>last_position</code>) if the distance is above <code>MAXIMUM_CENTROID_1_DISTANCE</code>, then next coordinate is the centroid, else the next coordinate is same with last coordinate
 
 ### Calculate Centroid 2
-This one is created to keep the persistance of the tip when the finger stopped, but keep it moving when the finger moves, slower than Calculate Centroid 1, but more persistance
+This one is created to keep the persistance of the tip when the finger stopped, but keep it moving when the finger moves, faster than Calculate Centroid 1, but less persistance
 
 1. For the first <code>MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID</code> coordinate, directly move to the current finger coordinate
 1. Calculate centroid from saved point in finger_tip_x and finger_tip_y list, except the last value (current finger position)
