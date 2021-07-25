@@ -1,4 +1,4 @@
-from settings.stabilizer_settings import MAXIMUM_CENTROID_DISTANCE, MINIMUM_ANGLE_DEGREE, MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID, SMOOTHING_POINT
+from settings.stabilizer_settings import MAXIMUM_CENTROID_1_DISTANCE, MAXIMUM_CENTROID_2_DISTANCE, MINIMUM_ANGLE_DEGREE, MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID, SMOOTHING_POINT
 from calculate_function import find_angle, find_centroid
 from constant.stabilize_type import CALCULATE_CENTROID_1, CALCULATE_CENTROID_2, NO_STABILIZER, SMOOTH_MOVE, SMOOTH_MOVE_WITH_MINIMUM_ANGLE
 import math
@@ -39,7 +39,7 @@ def calculate_centroid_1 (finger_tip_x : list, finger_tip_y : list, last_positio
             
             distance = math.sqrt( (last_centroid_x - new_centroid_x)**2 + (last_centroid_y - new_centroid_y)**2 )
 
-            if distance > MAXIMUM_CENTROID_DISTANCE:
+            if distance > MAXIMUM_CENTROID_1_DISTANCE:
                 return [new_centroid_x, new_centroid_y]
             else :
                 return last_position
@@ -48,31 +48,31 @@ def calculate_centroid_1 (finger_tip_x : list, finger_tip_y : list, last_positio
     else:
         return []
 
-def calculate_centroid_2 (finger_tip_x : list, finger_tip_y : list, _):
+def calculate_centroid_2 (finger_tip_x : list, finger_tip_y : list, last_position : list):
     x_point = finger_tip_x[len(finger_tip_x) - 1]
     y_point = finger_tip_y[len(finger_tip_y) - 1]
 
-    last_x = finger_tip_x[len(finger_tip_x) - 2]
-    last_y = finger_tip_y[len(finger_tip_y) - 2]
+    if len(finger_tip_x) >= MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID:
+        x_centroid, y_centroid = find_centroid(finger_tip_x[:-1], finger_tip_y[:-1])
 
-    x_centroid, y_centroid = find_centroid(finger_tip_x, finger_tip_y)
+        distance = math.sqrt( (x_point - x_centroid)**2 + (y_point - y_centroid)**2 )
 
-    distance = math.sqrt( (x_point - x_centroid)**2 + (y_point - y_centroid)**2 )
+        if distance > MAXIMUM_CENTROID_2_DISTANCE:
+            is_not_moving = False
+        else :
+            is_not_moving = True
 
-    if distance > MAXIMUM_CENTROID_DISTANCE:
-        is_not_moving = False
-    else :
-        is_not_moving = True
+        if is_not_moving:
+            finger_tip_x.clear()
+            finger_tip_y.clear()
 
-    if is_not_moving:
-        finger_tip_x.clear()
-        finger_tip_y.clear()
+            for _ in range(0, MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID):
+                finger_tip_x.append(last_position[0])
+                finger_tip_y.append(last_position[1])
 
-        for _ in range(0, MINIMUM_TIP_POINT_TO_CALCULATE_CENTROID):
-            finger_tip_x.append(last_x)
-            finger_tip_y.append(last_y)
-
-        return [last_x, last_y]
+            return last_position
+        else:
+            return [x_point, y_point]
     else:
         return [x_point, y_point]
 
