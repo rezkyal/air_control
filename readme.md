@@ -1,6 +1,6 @@
 # Air control
 
-Create a virtual mouse using webcam, google [MediaPipe](https://github.com/google/mediapipe), python [mouse](https://github.com/boppreh/mouse) and openCV in python 
+A virtual mouse based on hand movement using webcam, google [MediaPipe](https://github.com/google/mediapipe), python [mouse](https://github.com/boppreh/mouse) and openCV in python 
 
 <b>Before testing the virtual mouse, make sure you have saved and closed your important programs, the <em>ghost click</em>:ghost: can be very dangerous, use with full caution:exclamation::shipit:</b>
 
